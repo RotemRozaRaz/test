@@ -139,6 +139,10 @@ public class Board {
         }
     }
 
+    
+    /** 
+     * @return Board
+     */
     public static Board getBoard(){
 
         if (board_copy == null) {
@@ -148,6 +152,10 @@ public class Board {
         return board_copy;
     }
 
+    
+    /** 
+     * @return Tile[][]
+     */
     public Tile[][] getTiles(){
 
         Tile[][] copy = new Tile[15][15];
@@ -161,6 +169,11 @@ public class Board {
         return copy;
     }
 
+    
+    /** 
+     * @param w0
+     * @return boolean
+     */
     private boolean isWordInBoard(Word w0) {
         
         if ((w0.getRow() < 0) || (w0.getCol() < 0) || (w0.getRow() > 14) || (w0.getCol() > 14)) {
@@ -182,6 +195,13 @@ public class Board {
         return false;
     }
 
+    
+    /** 
+     * @param w0
+     * @param curr_row
+     * @param curr_col
+     * @return boolean
+     */
     private boolean checkForNeighbors(Word w0, int curr_row, int curr_col) {
 
         if (w0.isVertical()) {
@@ -200,6 +220,11 @@ public class Board {
 
     }
 
+    
+    /** 
+     * @param w0
+     * @return boolean
+     */
     private boolean isWordUsesAnotherWord(Word w0) {
          
         int curr_row = w0.getRow();
@@ -247,6 +272,10 @@ public class Board {
         return false;
     }
 
+    /** 
+     * @param w0
+     * @return boolean
+     */
     private boolean isWordnotReplaceWord(Word w0) {
 
         int curr_row = w0.getRow();
@@ -261,12 +290,10 @@ public class Board {
             
             while (curr_row < w0.getRow() + w0.getSize()) {
                 if (w0.getTiles()[i] == null && this.board[curr_row][w0.getCol()].getTile() != null) {
-                    i++;
-                    curr_row++;
-                    continue;
+                    
                 }
 
-                if (this.board[curr_row][w0.getCol()].getTile() != null && (w0.getTiles()[i] != this.board[curr_row][w0.getCol()].getTile())) {
+                else if (this.board[curr_row][w0.getCol()].getTile() != null && (w0.getTiles()[i] != this.board[curr_row][w0.getCol()].getTile())) {
                     return false;
                 }
 
@@ -279,7 +306,12 @@ public class Board {
             i = 0;
 
             while (curr_col < w0.getCol() + w0.getSize()) {
-                if (this.board[w0.getRow()][curr_col].getTile() != null && w0.getTiles()[i] != this.board[w0.getRow()][curr_col].getTile()) {
+
+                if (w0.getTiles()[i] == null && this.board[w0.getRow()][curr_col].getTile() != null) {
+                    
+                }
+
+                else if (this.board[w0.getRow()][curr_col].getTile() != null && w0.getTiles()[i] != this.board[w0.getRow()][curr_col].getTile()) {
                     return false;
                 }
 
@@ -291,6 +323,10 @@ public class Board {
         return true;
     }
 
+    /** 
+     * @param w0
+     * @return boolean
+     */
 	public boolean boardLegal(Word w0) {
 		
         boolean word_in_board = isWordInBoard(w0);
@@ -304,73 +340,131 @@ public class Board {
         return false;
 	}
 
+    /** 
+     * @param w0
+     * @return boolean
+     */
     public boolean dictionaryLegal(Word w0){
         return true;
     }
 
-    private Word findWordRight(int curr_row, int curr_col, int i, Word w0) {
-        ArrayList<Tile> new_word = new ArrayList<>();
-        int sCol = curr_col;
-
-        while (this.board[curr_row][curr_col + 1].getTile() != null) {
-            new_word.add(this.board[curr_row][curr_col].getTile());
-            curr_col++;
+    /** 
+     * @param tile_row
+     * @param tile_col
+     * @param letter
+     * @return Word
+     */
+    private Word findSingleWordHorizontal (int tile_row, int tile_col, Tile letter) {
+        
+        int i = tile_col - 1;
+        while (i >= 0 && this.board[tile_row][i].getTile() != null) {
+            i--;
         }
 
-        new_word.add(w0.getTiles()[i]);
+        i++;
+
+        int j = tile_col + 1;
+        while (j < this.board.length && this.board[tile_row][j].getTile() != null) {
+            j++;
+        }
+
+        j--;
+
+        ArrayList<Tile> new_word = new ArrayList<>();
+
+        for (int j2 = i; j2 < j+1; j2++) {
+
+            if (j2 == tile_row || this.board[tile_row][j2].getTile() == null) {
+                new_word.add(letter);
+            }
+            else {
+                new_word.add(this.board[tile_row][j2].getTile());
+            }
+        }
 
         Tile[] NW = new_word.toArray(new Tile[0]);
 
-        Word w = new Word(NW, curr_row, sCol, false);
-        if (wordsInBoard.contains(w)){
+        Word w = new Word(NW, tile_row, i, false);
+
+        if (wordsInBoard.contains(w)) {
+            return null;
+        }
+
+        return w;
+
+    }
+
+    /** 
+     * @param tile_row
+     * @param tile_col
+     * @param letter
+     * @return Word
+     */
+    private Word findSingleWordVertical (int tile_row, int tile_col, Tile letter) {
+
+        int i = tile_row - 1;
+        while (i >= 0 && this.board[i][tile_col].getTile() != null) {
+            i--;
+        }
+        i++;
+
+        int j = tile_row + 1;
+        while (j <= this.board.length && this.board[j][tile_col].getTile() != null){
+            j++;
+        }
+        j--;
+
+        ArrayList<Tile> new_word = new ArrayList<>();
+
+        for (int j2 = i; j2 < j+1; j2++) {
+
+            if (j2 == tile_row || this.board[j2][tile_col].getTile() == null) {
+                new_word.add(letter);
+            }
+
+            else {
+                new_word.add(this.board[j2][tile_col].getTile());
+            }
+        }
+
+        Tile[] NW = new_word.toArray(new Tile[0]);
+
+        Word w = new Word(NW, i, tile_col, true);
+
+        if (wordsInBoard.contains(w)) {
             return null;
         }
 
         return w;
     }
-
-    private Word findWordleft(int curr_row, int curr_col , int i, Word w0) {
-        ArrayList<Tile> new_word = new ArrayList<>();
-        int sCol = 0;
-
-        while (this.board[curr_row][curr_col - 1].getTile() != null) {
-            curr_col--;
-        }
-
-        sCol = curr_col;
-
-        while (this.board[curr_row][curr_col].getTile() != null) {
-            new_word.add(this.board[curr_row][curr_col].getTile());
-            curr_col++;
-        }
-
-        new_word.add(w0.getTiles()[i]);
-
-        Tile[] NW = new_word.toArray(new Tile[0]);
-
-        Word w = new Word(NW, curr_row, sCol, false);
-        if (wordsInBoard.contains(w)){
-            return null;
-        }
-
-        return w;
-    }
-
+    
+    
+    /** 
+     * @param w0
+     * @param curr_row
+     * @param word_col
+     * @param word_size
+     * @param word_row
+     * @return ArrayList<Word>
+     */
     private ArrayList<Word> findNewWordsVertical(Word w0, int curr_row, int word_col, int word_size, int word_row) {
 
         ArrayList<Word> new_words = new ArrayList<>();
         int i = 0;
         while (curr_row < word_row + word_size) {
 
-            if (this.board[curr_row][word_col - 1].getTile() != null && this.board[curr_row][word_col + 1].getTile() != null) {
-                i++;
-                curr_row++;
-                continue;
-            }
-
-            else if (this.board[curr_row][word_col - 1].getTile() != null) {
+            if (this.board[curr_row][word_col - 1].getTile() != null || this.board[curr_row][word_col + 1].getTile() != null) {
                 
-                Word n_word = findWordleft(curr_row, word_col, i, w0);
+                Tile letter = null;
+
+                if (this.board[curr_row][word_col].getTile() == null) {
+                    letter = w0.getTiles()[i];
+                }
+                else if (this.board[curr_row][word_col].getTile() != null) {
+                    letter = this.board[curr_row][word_col].getTile();
+                }
+
+                Word n_word = findSingleWordHorizontal(curr_row, word_col, letter);
                 
                 if (n_word != null) {
                     new_words.add(n_word);
@@ -378,16 +472,6 @@ public class Board {
                 
             }
 
-            else if (this.board[curr_row][word_col + 1].getTile() != null) {
-
-                Word n_word = findWordRight(curr_row, word_col, i, w0);
-
-                if (n_word != null) {
-                    new_words.add(n_word);
-                }
-
-                
-            }
             i++;
             curr_row++;
         }
@@ -396,82 +480,37 @@ public class Board {
     }
 
     
-    private Word findWordUp(int curr_row, int curr_col, int i, Word w0) {
-        ArrayList<Tile> new_word = new ArrayList<>();
-        int sRow = 0;
-
-        while (this.board[curr_row - 1][curr_col].getTile() != null) {
-            curr_row--;
-        }
-
-        sRow = curr_row;
-
-        while (this.board[curr_row][curr_col].getTile() != null) {
-            new_word.add(this.board[curr_row][curr_col].getTile());
-            curr_row++;
-        }
-
-        new_word.add(w0.getTiles()[i]);
-
-        Tile[] NW = new_word.toArray(new Tile[0]);
-
-        Word w = new Word(NW, sRow, curr_col, true);
-        if (wordsInBoard.contains(w)){
-            return null;
-        }
-
-        return w;
-    }
-
-    private Word findWordDown(int curr_row, int curr_col, int i, Word w0) {
-        ArrayList<Tile> new_word = new ArrayList<>();
-        int sRow = curr_row;
-
-        while (this.board[curr_row][curr_col].getTile() != null) {
-            new_word.add(this.board[curr_row][curr_col].getTile());
-            curr_col--;
-        }
-
-        new_word.add(w0.getTiles()[i]);
-
-        Tile[] NW = new_word.toArray(new Tile[0]);
-
-        Word w = new Word(NW, sRow, curr_col, true);
-        if (wordsInBoard.contains(w)){
-            return null;
-        }
-
-        return w;
-    }
-
-    private ArrayList<Word> findNewWordsHorizonal(Word w0, int curr_col, int word_col, int word_size, int word_row) {
+    /** 
+     * @param w0
+     * @param curr_col
+     * @param word_col
+     * @param word_size
+     * @param word_row
+     * @return ArrayList<Word>
+     */
+    private ArrayList<Word> findNewWordsHorizontal(Word w0, int curr_col, int word_col, int word_size, int word_row) {
 
         
         ArrayList<Word> new_words = new ArrayList<>();
-        int i = 0;
-
+        int i =0;
         while (curr_col < word_col + word_size) {
 
-            if (this.board[word_row - 1][curr_col].getTile() != null && this.board[word_row + 1][curr_col].getTile() != null) {
-                i++;
-                curr_col++;
-                continue;
-            }
+            if (this.board[word_row - 1][curr_col].getTile() != null || this.board[word_row + 1][curr_col].getTile() != null) {
 
-            else if (this.board[word_row - 1][curr_col].getTile() != null) {
-                Word n_word = findWordUp(word_row, curr_col, i, w0);
+                Tile letter = null;
+
+                if (this.board[word_row][curr_col].getTile() == null) {
+                    letter = w0.getTiles()[i];
+                }
+                else if (this.board[word_row][curr_col].getTile() != null) {
+                    letter = this.board[word_row][curr_col].getTile();
+                }
+
+                Word n_word = findSingleWordVertical(word_row, curr_col, letter);
 
                 if (n_word != null) {
                     new_words.add(n_word);
                 };
-            }
-
-            else if (this.board[word_row + 1][curr_col].getTile() != null) {
-                Word n_word = findWordDown(word_row, curr_col, i, w0);
-
-                if (n_word != null) {
-                    new_words.add(n_word);
-                }
             }
 
             curr_col++;
@@ -481,6 +520,11 @@ public class Board {
         return new_words;
     }
 
+    
+    /** 
+     * @param w0
+     * @return ArrayList<Word>
+     */
     public ArrayList<Word> getWords(Word w0){
 
         ArrayList<Word> words = new ArrayList<>();
@@ -497,7 +541,7 @@ public class Board {
         }
 
         else {
-            words = findNewWordsHorizonal(w0, curr_col, word_col, word_size, word_row);
+            words = findNewWordsHorizontal(w0, curr_col, word_col, word_size, word_row);
         }
 
 
@@ -507,6 +551,10 @@ public class Board {
     }
 
 
+    
+    /** 
+     * @return List<Character>
+     */
     private List<Character> ABCs(){
         List<Character> ABCs = new ArrayList<>();
 
@@ -539,6 +587,14 @@ public class Board {
         return ABCs;
     }
 
+    
+    /** 
+     * @param curr_row
+     * @param curr_col
+     * @param word_col
+     * @param wordBonuses
+     * @return ArrayList<Integer>
+     */
     private ArrayList<Integer> applyStarVertical(int curr_row, int curr_col, int word_col, ArrayList<Integer> wordBonuses) {
 
         if (curr_row == 7 && curr_col == 7) {
@@ -550,6 +606,14 @@ public class Board {
         return wordBonuses;
     }
 
+    
+    /** 
+     * @param curr_row
+     * @param curr_col
+     * @param word_row
+     * @param wordBonuses
+     * @return ArrayList<Integer>
+     */
     private ArrayList<Integer> applyStarHorizonal(int curr_row, int curr_col, int word_row, ArrayList<Integer> wordBonuses) {
  
         if (curr_row == 7 && curr_col == 7) {
@@ -640,7 +704,7 @@ public class Board {
                         }
             
                         i++;
-                        curr_row++;
+                        curr_col++;
                         continue;
                     }
 
@@ -675,6 +739,10 @@ public class Board {
         return score;
     }
 
+    
+    /** 
+     * @param w0
+     */
     private void placeTheWord(Word w0) {
 
         int curr_col = w0.getCol();
@@ -719,6 +787,11 @@ public class Board {
         this.isEmpty = false;
     }
 
+    
+    /** 
+     * @param w0
+     * @return int
+     */
     public int tryPlaceWord(Word w0) {
         
         int word_score = 0;

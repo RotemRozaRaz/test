@@ -3,7 +3,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/RotemRozaRaz/test">
-    <img src="C:\Users\rrr47\OneDrive\Documents\לימודים\2024ב\פתמ 1\project\Book Scrabble\test\src\test\logo.png" alt="Logo" width="80" height="80">
+    <img src="logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Book Scrabble Project</h3>
