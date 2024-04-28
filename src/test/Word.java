@@ -1,5 +1,6 @@
 package test;
 
+
 import java.util.Arrays;
 
 public class Word {
@@ -17,7 +18,10 @@ public class Word {
         this.vertical = in_vertical;
     }
 
-    
+    public int getSize(){
+        return tiles.length;
+    }
+
     /** 
      * @return Tile[]
      */

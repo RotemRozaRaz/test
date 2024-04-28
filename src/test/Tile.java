@@ -224,7 +224,14 @@ public class Tile {
          * @return int[]
          */
         public int[] getQuantities() {
-            return tiles_count_init;
+            
+            int[] tiles_count_copy = new int[tiles_count.length];
+
+            for (int i = 0; i < tiles_count_copy.length; i++) {
+                tiles_count_copy[i] = tiles_count[i];
+            }
+
+            return tiles_count_copy;
         }
 
 
