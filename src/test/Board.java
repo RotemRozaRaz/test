@@ -150,6 +150,7 @@ public class Board {
         }
 
         return board_copy;
+        // return null;
     }
 
     
@@ -167,6 +168,7 @@ public class Board {
         }
 
         return copy;
+        // return null;
     }
 
     
@@ -293,7 +295,7 @@ public class Board {
                     
                 }
 
-                else if (this.board[curr_row][w0.getCol()].getTile() != null && (w0.getTiles()[i] != this.board[curr_row][w0.getCol()].getTile())) {
+                else if ((this.board[curr_row][w0.getCol()].getTile() != null && (w0.getTiles()[i] != this.board[curr_row][w0.getCol()].getTile())) || (this.board[curr_row][w0.getCol()].getTile() == null && w0.getTiles()[i] == null)) {
                     return false;
                 }
 
@@ -326,6 +328,7 @@ public class Board {
     /** 
      * @param w0
      * @return boolean
+     * 
      */
 	public boolean boardLegal(Word w0) {
 		
@@ -392,6 +395,8 @@ public class Board {
 
         return w;
 
+        // return null;
+
     }
 
     /** 
@@ -436,6 +441,8 @@ public class Board {
         }
 
         return w;
+
+        // return null;
     }
     
     
@@ -477,6 +484,7 @@ public class Board {
         }
 
         return new_words;
+        // return null;
     }
 
     
@@ -518,6 +526,7 @@ public class Board {
         }
 
         return new_words;
+        // return null;
     }
 
     
@@ -548,6 +557,8 @@ public class Board {
         words.add(w0);
 
         return words;
+
+        // return null;
     }
 
 
@@ -604,7 +615,9 @@ public class Board {
             }
         }
         return wordBonuses;
+        // return null;
     }
+
 
     
     /** 
@@ -623,6 +636,7 @@ public class Board {
             }
         }
         return wordBonuses;
+        // return null;
     }
 
     /**
@@ -737,6 +751,8 @@ public class Board {
         }
 
         return score;
+
+        // return 0;
     }
 
     
@@ -816,6 +832,7 @@ public class Board {
         }
 
         return word_score;
+        // return 0;
     }
 
     public class Cell {
@@ -876,4 +893,12 @@ public class Board {
         }
     
     }
+
+    public class ChangeTileExeption extends Exception {
+    
+    public ChangeTileExeption(String message) {
+        super(message);
+    }
+}
+
 }

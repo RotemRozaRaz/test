@@ -9,6 +9,7 @@ public class Tile {
 
     public final char letter;
     public final int score;
+    private final Map<Character, Integer> scores = init_score_dict();
 
     private Tile(char letter) {
         this.letter = letter;
@@ -63,9 +64,7 @@ public class Tile {
      */
     private int init_score(char letter) {
 
-        Map<Character, Integer>scores = init_score_dict();
-
-        return scores.get(letter);
+        return this.scores.get(letter);
     }
 
     
@@ -122,32 +121,26 @@ public class Tile {
 
         /** 
         * Checking if the current bag has no tiles
+        if item != 0 return false
         * @return boolean
         */
         private boolean check_if_bag_empty() {
-            boolean empty = false;
-            int count_of_empties = 0;
 
             for (int item : tiles_count) {
-                if (item == 0){
-                    count_of_empties++;
+                if (item != 0){
+                    return false;
                 }
             }
 
-            if (count_of_empties == 26) {
-                empty = true;
-            }
-
-            return empty;
-
+            return true;
         }
 
         /**
          * Sends random tile to the user, if bag is empty - return null
+         * READ AGAIN
          * @return Tile
          */
         public Tile getRand() {
-            //what heappend if the count of the tile is 0?
 
             if (check_if_bag_empty()){
                 return null;
@@ -155,13 +148,13 @@ public class Tile {
 
             Tile NewTile = null;
             Random random = new Random();
-            int RamdomTile = random.nextInt(26);
+            int RandomTile = random.nextInt(26);
 
-            if (tiles_count[RamdomTile] != 0){
+            if (tiles_count[RandomTile] != 0){
                 
-                tiles_count[RamdomTile]--;
+                tiles_count[RandomTile]--;
 
-                NewTile = tiles[RamdomTile];
+                NewTile = tiles[RandomTile];
             }
 
             return NewTile;
@@ -170,38 +163,25 @@ public class Tile {
 
         /**
          * Sends tile by request from the user, if it doesn't exists in the bag - return null
+         * USE INDEXES
          * @param inletter
          * @return Tile
          */
         public Tile getTile(char inletter) {
 
-            int i = 0;
-            for (Tile tile : tiles) {
-                if (tile.letter == inletter && tiles_count[i] != 0){
-                    return tile;
-                }
 
-                i++;
-            }
-
-            return null;
+            return tiles[inletter - 'A'];
         }
 
         /**
          * insert tile back to the bag
-         * ? what happend if the number is above the init value?
          * @param tile
          */
         public void put(Tile tile) {
 
-            int i = 0;
-            for (Tile currTile : tiles){
-                if (currTile.equals(tile) && (tiles_count_init[i] >= tiles_count[i] + 1)) {
-                    tiles_count[i]++;
-                }
+            int tileIndex = tile.letter - 'A';
 
-                i++;
-            }
+            tiles_count[tileIndex]++;
         }
         
         /**
@@ -221,15 +201,12 @@ public class Tile {
 
         /**
          * returns the initialized values of the tiles count
+         * clone
          * @return int[]
          */
         public int[] getQuantities() {
             
-            int[] tiles_count_copy = new int[tiles_count.length];
-
-            for (int i = 0; i < tiles_count_copy.length; i++) {
-                tiles_count_copy[i] = tiles_count[i];
-            }
+            int[] tiles_count_copy = tiles_count.clone();
 
             return tiles_count_copy;
         }
