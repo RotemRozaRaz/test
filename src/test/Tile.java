@@ -169,7 +169,9 @@ public class Tile {
          */
         public Tile getTile(char inletter) {
 
-
+            if (inletter == '_' || !Character.isUpperCase(inletter)) {
+                return null;
+            }
             return tiles[inletter - 'A'];
         }
 
@@ -179,7 +181,12 @@ public class Tile {
          */
         public void put(Tile tile) {
 
+            // char inLetter = Character.toUpperCase(tile.letter);
             int tileIndex = tile.letter - 'A';
+
+            if (tiles_count[tileIndex] == tiles_count_init[tileIndex]) {
+                return;
+            }
 
             tiles_count[tileIndex]++;
         }
