@@ -148,13 +148,13 @@ public class Tile {
 
             Tile NewTile = null;
             Random random = new Random();
-            int RandomTile = random.nextInt(26);
+            int RandomTile = random.nextInt(this.tiles.length);
 
             if (tiles_count[RandomTile] != 0){
                 
                 tiles_count[RandomTile]--;
 
-                NewTile = tiles[RandomTile];
+                NewTile = new Tile(tiles[RandomTile].letter);
             }
 
             return NewTile;
@@ -163,7 +163,6 @@ public class Tile {
 
         /**
          * Sends tile by request from the user, if it doesn't exists in the bag - return null
-         * USE INDEXES
          * @param inletter
          * @return Tile
          */

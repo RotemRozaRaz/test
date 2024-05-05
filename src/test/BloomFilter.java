@@ -1,6 +1,6 @@
 package test;
+import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.function.Function;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.math.BigInteger;
@@ -69,9 +69,41 @@ public class BloomFilter {
         
     }
 
+    private ArrayList<Integer> ConvertBitSetToList(){
+        ArrayList<Integer> bitsArray = new ArrayList<>();
+
+        for (int i = 0; i < this.bitSet.length(); i++) {
+            if (this.bitSet.get(i) == true) {
+                bitsArray.add(1);
+            }
+            else {
+                bitsArray.add(0);
+            }
+        }
+
+        return bitsArray;
+    }
+
+    private StringBuilder ConvertToStringBuilder(ArrayList<Integer> bitsArray){
+        StringBuilder sb = new StringBuilder();
+
+        for (Integer i : bitsArray) {
+            sb.append(i.toString());
+        }
+
+        return sb;
+    }
+
     @Override
     public String toString(){
-        return bitSet.toString();
+        
+        ArrayList<Integer> bitsArray = ConvertBitSetToList();
+
+        StringBuilder sb = ConvertToStringBuilder(bitsArray);
+        String s = sb.toString();
+
+        return s;
+        
     }
 
 }
