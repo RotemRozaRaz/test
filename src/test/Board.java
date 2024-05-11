@@ -207,13 +207,27 @@ public class Board {
     private boolean checkForNeighbors(Word w0, int curr_row, int curr_col) {
 
         if (w0.isVertical()) {
-            if ((this.board[curr_row][curr_col + 1] != null) || (this.board[curr_row][curr_col - 1] != null)) {
+
+            if (curr_col == 0) {
+                if (this.board[curr_row][curr_col + 1].getTile() != null) {
+                    return true;
+                }
+            }
+
+            else if ((this.board[curr_row][curr_col + 1].getTile() != null) || (this.board[curr_row][curr_col - 1].getTile() != null)) {
                 return true;
             }
         }
 
         else {
-            if ((this.board[curr_row + 1][curr_col] != null) || (this.board[curr_row - 1][curr_col] != null)) {
+
+            if (curr_row == 0) {
+                if (this.board[curr_row + 1][curr_col].getTile() != null) {
+                    return true;
+                }
+            }
+
+            else if ((this.board[curr_row + 1][curr_col].getTile() != null) || (this.board[curr_row - 1][curr_col].getTile() != null)) {
                 return true;
             }
         }
@@ -262,7 +276,10 @@ public class Board {
             i = 0;
 
             while (curr_col < w0.getCol() + w0.getSize()) {
-                if ((this.board[w0.getRow()][curr_col].getTile() != null && w0.getTiles()[i] == null) || (this.board[w0.getRow()][curr_col].getTile() == w0.getTiles()[i])  || (checkForNeighbors(w0, w0.getRow(), curr_col))) {
+                boolean nullLetter = board[w0.getRow()][curr_col].getTile() != null && w0.getTiles()[i] == null;
+                boolean lettersNotEqaul = board[w0.getRow()][curr_col].getTile() == w0.getTiles()[i];
+                boolean checkForNeighbors = checkForNeighbors(w0, w0.getRow(), curr_col);
+                if (nullLetter || lettersNotEqaul || checkForNeighbors) {
                     return true;
                 }
 

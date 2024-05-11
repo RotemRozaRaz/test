@@ -50,6 +50,7 @@ public class Dictionary {
             }
         }
     }
+    
     public boolean query(String string) {
         
         if (this.WordsInBooks.query(string)) {
