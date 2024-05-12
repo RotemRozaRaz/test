@@ -9,9 +9,10 @@ public class Tile {
 
     public final char letter;
     public final int score;
-    private final Map<Character, Integer> scores = init_score_dict();
+    private final Map<Character, Integer> scores;
 
     private Tile(char letter) {
+        this.scores = init_score_dict();
         this.letter = letter;
         this.score = init_score(letter);
     }
@@ -137,7 +138,6 @@ public class Tile {
 
         /**
          * Sends random tile to the user, if bag is empty - return null
-         * READ AGAIN
          * @return Tile
          */
         public Tile getRand() {
@@ -148,13 +148,17 @@ public class Tile {
 
             Tile NewTile = null;
             Random random = new Random();
-            int RandomTile = random.nextInt(this.tiles.length);
+            int RandomTile = random.nextInt(this.size());
 
-            if (tiles_count[RandomTile] != 0){
-                
-                tiles_count[RandomTile]--;
+            int i = 0;
+            while (RandomTile > this.tiles_count[i]) {
+                RandomTile -= tiles_count[i];
+                i++;
+            }
 
-                NewTile = new Tile(tiles[RandomTile].letter);
+            if (this.tiles_count[i] > 0) {
+                tiles_count[i]--;
+                NewTile = tiles[i];
             }
 
             return NewTile;
@@ -180,7 +184,10 @@ public class Tile {
          */
         public void put(Tile tile) {
 
-            // char inLetter = Character.toUpperCase(tile.letter);
+            if (tile == null) {
+                return;
+            }
+            
             int tileIndex = tile.letter - 'A';
 
             if (tiles_count[tileIndex] == tiles_count_init[tileIndex]) {

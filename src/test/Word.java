@@ -12,7 +12,7 @@ public class Word {
 
     public Word(Tile[] in_tiles, int in_row, int in_col, boolean in_vertical){
 
-        this.tiles = in_tiles;
+        this.tiles = in_tiles.clone();
         this.row = in_row;
         this.col = in_col;
         this.vertical = in_vertical;

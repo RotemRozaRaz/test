@@ -14,13 +14,13 @@ public class Board {
     private List<int[]> PaleBlueBonus = new ArrayList<>();
     private List<Word> wordsInBoard = new ArrayList<>();
 
-    public Board(){
+    private Board() {
 
         board = new Cell[15][15];
         isEmpty = true;
         initBonuses();
 
-        for (int i=0; i < 15; i++){
+        for (int i = 0; i < 15; i++){
             for (int j = 0; j < 15; j++) {
                 board[i][j] = new Cell(1, 1);
             }
@@ -29,7 +29,7 @@ public class Board {
         initBoardBonuses();
     }
 
-    private void initBonuses(){
+    private void initBonuses() {
 
         //Red
         RedBonus.add(new int[] {0,0});
@@ -205,7 +205,6 @@ public class Board {
      * @return boolean
      */
     private boolean checkForNeighbors(Word w0, int curr_row, int curr_col) {
-
         if (w0.isVertical()) {
 
             if (curr_col == 0) {
@@ -213,6 +212,13 @@ public class Board {
                     return true;
                 }
             }
+
+            else if(curr_col == 14) {
+                if (this.board[curr_row][curr_col - 1].getTile() != null) {
+                    return true;
+                }
+            }
+
 
             else if ((this.board[curr_row][curr_col + 1].getTile() != null) || (this.board[curr_row][curr_col - 1].getTile() != null)) {
                 return true;
@@ -223,6 +229,12 @@ public class Board {
 
             if (curr_row == 0) {
                 if (this.board[curr_row + 1][curr_col].getTile() != null) {
+                    return true;
+                }
+            }
+
+            else if(curr_row == 14) {
+                if (this.board[curr_row - 1][curr_col].getTile() != null) {
                     return true;
                 }
             }
@@ -247,7 +259,7 @@ public class Board {
         int curr_col = w0.getCol();
         int i = 0;
 
-        if (isEmpty) {
+        if (this.isEmpty) {
             if (w0.isVertical()) {
                 if ((curr_col == 7) && (curr_row <= 7) && (curr_row + w0.getSize() > 7)) {
                     return true;
@@ -263,7 +275,9 @@ public class Board {
         else if (w0.isVertical()) {
             
             while (curr_row < w0.getRow() + w0.getSize()) {
-                if ((this.board[curr_row][curr_col].getTile() != null && w0.getTiles()[i] == null) || (this.board[curr_row][curr_col].getTile() == w0.getTiles()[i]) || (checkForNeighbors(w0, curr_row, curr_col))) {
+                if ((this.board[curr_row][curr_col].getTile() != null && w0.getTiles()[i] == null) ||
+                    (this.board[curr_row][curr_col].getTile() == w0.getTiles()[i]) ||
+                    (checkForNeighbors(w0, curr_row, curr_col))) {
                     return true;
                 }
 
@@ -392,7 +406,7 @@ public class Board {
 
         ArrayList<Tile> new_word = new ArrayList<>();
 
-        for (int j2 = i; j2 < j+1; j2++) {
+        for (int j2 = i; j2 <= j; j2++) {
 
             if (j2 == tile_row || this.board[tile_row][j2].getTile() == null) {
                 new_word.add(letter);
@@ -411,9 +425,6 @@ public class Board {
         }
 
         return w;
-
-        // return null;
-
     }
 
     /** 
@@ -431,14 +442,14 @@ public class Board {
         i++;
 
         int j = tile_row + 1;
-        while (j <= this.board.length && this.board[j][tile_col].getTile() != null){
+        while (j < this.board.length && this.board[j][tile_col].getTile() != null) {
             j++;
         }
         j--;
 
         ArrayList<Tile> new_word = new ArrayList<>();
 
-        for (int j2 = i; j2 < j+1; j2++) {
+        for (int j2 = i; j2 <= j; j2++) {
 
             if (j2 == tile_row || this.board[j2][tile_col].getTile() == null) {
                 new_word.add(letter);
@@ -458,8 +469,6 @@ public class Board {
         }
 
         return w;
-
-        // return null;
     }
     
     
@@ -475,10 +484,24 @@ public class Board {
 
         ArrayList<Word> new_words = new ArrayList<>();
         int i = 0;
+        
         while (curr_row < word_row + word_size) {
 
-            if (this.board[curr_row][word_col - 1].getTile() != null || this.board[curr_row][word_col + 1].getTile() != null) {
-                
+            boolean isTileNeighbor = false;
+
+            if (word_col == 0 && this.board[curr_row][word_col + 1].getTile() != null) {
+                isTileNeighbor = true;
+            }
+
+            else if (word_col == 14 && this.board[curr_row][word_col - 1].getTile() != null) {
+                isTileNeighbor = true;
+            }
+
+            else if (this.board[curr_row][word_col - 1].getTile() != null || this.board[curr_row][word_col + 1].getTile() != null) {
+                isTileNeighbor = true; 
+            }
+
+            if (isTileNeighbor) {
                 Tile letter = null;
 
                 if (this.board[curr_row][word_col].getTile() == null) {
@@ -493,7 +516,6 @@ public class Board {
                 if (n_word != null) {
                     new_words.add(n_word);
                 }
-                
             }
 
             i++;
@@ -501,7 +523,6 @@ public class Board {
         }
 
         return new_words;
-        // return null;
     }
 
     
@@ -517,11 +538,25 @@ public class Board {
 
         
         ArrayList<Word> new_words = new ArrayList<>();
-        int i =0;
+        int i = 0;
+        // fix board limits
         while (curr_col < word_col + word_size) {
 
-            if (this.board[word_row - 1][curr_col].getTile() != null || this.board[word_row + 1][curr_col].getTile() != null) {
+            boolean isTileNeighbor = false;
 
+            if (word_row == 0 && this.board[word_row + 1][curr_col].getTile() != null) {
+                    isTileNeighbor = true;
+                }
+
+            else if (word_row == 14 && this.board[word_row - 1][curr_col].getTile() != null) {
+                    isTileNeighbor = true;
+            }
+
+            else if (this.board[word_row - 1][curr_col].getTile() != null || this.board[word_row + 1][curr_col].getTile() != null) {
+                isTileNeighbor = true;
+            }
+
+            if (isTileNeighbor) {
                 Tile letter = null;
 
                 if (this.board[word_row][curr_col].getTile() == null) {
@@ -535,7 +570,7 @@ public class Board {
 
                 if (n_word != null) {
                     new_words.add(n_word);
-                };
+                }
             }
 
             curr_col++;
@@ -543,7 +578,6 @@ public class Board {
         }
 
         return new_words;
-        // return null;
     }
 
     
@@ -574,8 +608,6 @@ public class Board {
         words.add(w0);
 
         return words;
-
-        // return null;
     }
 
 
@@ -632,7 +664,6 @@ public class Board {
             }
         }
         return wordBonuses;
-        // return null;
     }
 
 
@@ -653,14 +684,13 @@ public class Board {
             }
         }
         return wordBonuses;
-        // return null;
     }
 
     /**
      * @param w0
      * @return
      */
-    public int getScore(Word w0){
+    public int getScore(Word w0) {
 
         int score = 0;
         int word_row = w0.getRow();
@@ -680,30 +710,23 @@ public class Board {
             while (curr_row < word_row + word_size) {
 
                 if (word_tiles[i] == null) {
-                    if (ABCs.contains(this.board[curr_row][word_col].getTile().letter)) {
-                        score += this.board[curr_row][word_col].getTile().score * this.board[curr_row][word_col].getLetterBonus();
-                        
-                        CheckSize = wordBonuses.size();
+                        if (ABCs.contains(this.board[curr_row][word_col].getTile().letter)) {
+                            score += this.board[curr_row][word_col].getTile().score * this.board[curr_row][word_col].getLetterBonus();
+                            
+                            CheckSize = wordBonuses.size();
 
-                        wordBonuses = applyStarVertical(curr_row, curr_col, word_col, wordBonuses);
+                            wordBonuses = applyStarVertical(curr_row, curr_col, word_col, wordBonuses);
 
-                        if (this.board[curr_row][word_col].getWordBonus() != 1  && (CheckSize == wordBonuses.size())) {
-                            wordBonuses.add(this.board[curr_row][word_col].getWordBonus());
+                            if (this.board[curr_row][word_col].getWordBonus() != 1  && (CheckSize == wordBonuses.size())) {
+                                wordBonuses.add(this.board[curr_row][word_col].getWordBonus());
+                            }
+                
+                            i++;
+                            curr_row++;
+                            continue;
                         }
-            
-                        i++;
-                        curr_row++;
-                        continue;
                     }
-            
-                    else {
-                        try {
-                            throw new ChangeTileExeption("This tile is empty");
-                        } catch (Exception e) {
-                            System.out.println("This tile is empty");
-                        }
-                    } 
-                }
+                
 
                 score += word_tiles[i].score * this.board[curr_row][word_col].getLetterBonus();
 
@@ -724,28 +747,21 @@ public class Board {
             while (curr_col < word_col + word_size) {
 
                 if (word_tiles[i] == null) {
-                    if (ABCs.contains(this.board[word_row][curr_col].getTile().letter)) {
-                        score += this.board[word_row][curr_col].getTile().score * this.board[word_row][curr_col].getLetterBonus();
 
-                        CheckSize = wordBonuses.size();
-                        wordBonuses = applyStarHorizonal(curr_row, curr_col, word_row, wordBonuses);
-            
-                        if (this.board[curr_row][word_col].getWordBonus() != 1  && (CheckSize == wordBonuses.size())) {
-                            wordBonuses.add(this.board[curr_row][word_col].getWordBonus());
-                        }
-            
-                        i++;
-                        curr_col++;
-                        continue;
-                    }
+                        if (ABCs.contains(this.board[word_row][curr_col].getTile().letter)) {
+                            score += this.board[word_row][curr_col].getTile().score * this.board[word_row][curr_col].getLetterBonus();
 
-                    else {
-                        try {
-                            throw new ChangeTileExeption("This tile is empty");
-                        } catch (Exception e) {
-                            System.out.println("This tile is empty");
+                            CheckSize = wordBonuses.size();
+                            wordBonuses = applyStarHorizonal(curr_row, curr_col, word_row, wordBonuses);
+                
+                            if (this.board[curr_row][word_col].getWordBonus() != 1  && (CheckSize == wordBonuses.size())) {
+                                wordBonuses.add(this.board[curr_row][word_col].getWordBonus());
+                            }
+                
+                            i++;
+                            curr_col++;
+                            continue;
                         }
-                    }
                 }
                 
                 score += word_tiles[i].score * this.board[word_row][curr_col].getLetterBonus();
@@ -768,8 +784,6 @@ public class Board {
         }
 
         return score;
-
-        // return 0;
     }
 
     
@@ -888,11 +902,7 @@ public class Board {
     
             if (this.tile != null) {
                 
-                try {
-                    throw new ChangeTileExeption("This tile runs over an existing one");
-                } catch (ChangeTileExeption e) {
-                    System.out.println(e.getMessage());
-                }
+                return;
     
             }
     

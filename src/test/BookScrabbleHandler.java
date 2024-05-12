@@ -17,7 +17,6 @@ public class BookScrabbleHandler implements ClientHandler {
         try {
 
             String line = scanner.nextLine();
-            System.out.println("server got: " + line);
 
             String[] words = line.split(",");
             String task = words[0];
@@ -48,7 +47,6 @@ public class BookScrabbleHandler implements ClientHandler {
                     result = "false\n";
                 }
             }
-            System.out.println("server sends: " + result);
             outToClient.write(result.getBytes());
         }
         catch (Exception e) {
