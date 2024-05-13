@@ -35,9 +35,9 @@ public class MyServer extends Thread {
                     aClient.close();
                 }
             } catch (SocketTimeoutException e) {
-                System.out.println("Exception : " + e.getMessage());
+                // System.out.println("Exception : " + e.getMessage());
             } catch (Exception e) {
-                System.out.println("Exception : " + e.getMessage());
+                // System.out.println("Exception : " + e.getMessage());
                 e.printStackTrace();
             }
         }

@@ -96,7 +96,7 @@ public class MainTrain1 {
 		if(b.tryPlaceWord(bit)!=22)
 			System.out.println("problem in placeWord for 5th word (-15)");
 
-		Word fox = new Word(get("ABCDEFG"), 5, 7, true);
+		Word fox = new Word(get("ABCDEFG"), 5, 7, false);
 		if (b.tryPlaceWord(fox) != 0) 
 			System.out.println("problem in placeWord for 6th word (-15)");
 		
