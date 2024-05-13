@@ -6,18 +6,18 @@ import java.util.ArrayList;
 public class DictionaryManager {
 
     private HashMap<String, Dictionary> BooksDictionary;
-    private static DictionaryManager DictionaryManageringletone = null;
+    private static DictionaryManager DictionaryManagerSingletone = null;
 
     private DictionaryManager() {
         BooksDictionary  = new HashMap<>();
     }
 
     public static DictionaryManager get() {
-        if (DictionaryManageringletone == null) {
-            DictionaryManageringletone = new DictionaryManager();
+        if (DictionaryManagerSingletone == null) {
+            DictionaryManagerSingletone = new DictionaryManager();
         }
 
-        return DictionaryManageringletone;
+        return DictionaryManagerSingletone;
     }
 
     private boolean querySingleBook(String BookName, String query) {
