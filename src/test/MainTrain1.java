@@ -1,6 +1,8 @@
 package test;
 
 
+import java.util.Random;
+
 import test.Tile.Bag;
 
 public class MainTrain1 {
@@ -96,17 +98,54 @@ public class MainTrain1 {
 		if(b.tryPlaceWord(bit)!=22)
 			System.out.println("problem in placeWord for 5th word (-15)");
 
-		Word fox = new Word(get("ABCDEFG"), 5, 7, false);
+		Word fox = new Word(get("ABC_EFG"), 0, 0, false);
 		if (b.tryPlaceWord(fox) != 0) 
 			System.out.println("problem in placeWord for 6th word (-15)");
 		
 
 	}
 
+	public static void checkGetRand() 
+	{
+		Bag bag = Bag.getBag();
+		for (int i = 0; i < 98; i++) {
+			System.out.println(bag.getRand());
+		}
+	}
+
+	public static void stressBoard()
+	{
+		Random random = new Random();
+		for (int i = 0; i < 100000000 ; i++)
+		{
+			if (i%10000 == 0)
+				System.out.println(String.format("iter %d/100000000", i));
+			Board b = Board.getBoard();
+			Bag bag = Bag.getBag();
+			int wordsnum = random.nextInt(30) + 5;
+			for(int wn = 0; wn < wordsnum; wn++)
+			{
+				//build word:
+				int wordlen = random.nextInt(16) + 1;
+				Tile[] ts = new Tile[wordlen];
+				for(int j = 0; j < ts.length; j++)
+				{
+					if (random.nextInt(10) == 0)
+						ts[j] = null;
+					else
+						ts[j] = bag.getRand();
+				}
+				b.tryPlaceWord(new Word(ts, random.nextInt(15), random.nextInt(15), random.nextInt(2)==0));
+				// System.out.println("Placed word " + wn);
+			}
+		}
+	}
+
 	public static void main(String[] args) {
 		testBag(); // 30 points
 		testBoard(); // 70 points
-		System.out.println("done");				
+		//checkGetRand();; //20 points
+		System.out.println("well done");				
 	}
 
 }

@@ -146,22 +146,21 @@ public class Tile {
                 return null;
             }
 
-            Tile NewTile = null;
+            Tile newTile = null;
+            int wordsLen = 26;
             Random random = new Random();
-            int RandomTile = random.nextInt(this.size());
+            int randomTile = random.nextInt(wordsLen);
 
-            int i = 0;
-            while (RandomTile > this.tiles_count[i]) {
-                RandomTile -= tiles_count[i];
-                i++;
+            while (tiles_count[randomTile] == 0) {
+                randomTile = random.nextInt(wordsLen);
+            }
+            
+            if (tiles_count[randomTile] > 0) {
+                tiles_count[randomTile]--;
+                newTile = tiles[randomTile];
             }
 
-            if (this.tiles_count[i] > 0) {
-                tiles_count[i]--;
-                NewTile = tiles[i];
-            }
-
-            return NewTile;
+            return newTile;
         }
 
 
